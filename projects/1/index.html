@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Crime Finder</title>
+        <style>
+            body {background-color: green;}
+            p, h1 {font-family: helvetica; color: white}
+            p {font-size:1.5em;line-height:1.5em; margin-left: 24px; color: white;}
+            pre {font-size: 2em;}
+            button {background-color: lightyellow;}
+            
+            div {
+                background-color:lightgreen; 
+                border: 5px solid skyblue; 
+                border-radius: 6px;
+                min-height:75px;
+                padding:15px;
+            }
+            
+            input[type=text] {
+                width: 130px;
+                box-sizing: border-box;
+                border: 2px solid #ccc;
+                border-radius: 4px;
+                font-size: 16px;
+                background-color: white;
+                background-image: url('searchicon.png');
+                background-position: 10px 10px; 
+                background-repeat: no-repeat;
+                padding: 12px 20px 12px 40px;
+                -webkit-transition: width 0.4s ease-in-out;
+                transition: width 0.4s ease-in-out;
+            }
+
+            input[type=text]:focus {
+                width: 100%;
+            }
+
+        </style>
+    </head>
+    <body>
+    <h1 style= "text-align: center;">Crime Finder</h1>
+    
+   
+    <div id="form">
+        <p style = "text-align: left;">
+            Enter a case number for crime data. Visit the City of Chicago data portal for case numbers.
+            <a href="https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2" target = "_blank">Data Portal</a>
+            </p>
+                <form>
+                    <input id="crime" type="text" name="search" placeholder="Search..">
+                </form>
+                <br>
+        <button type="button" id="btnSearch" >Search</button>
+    </div>
+    <br>
+    
+    
+    <div id="results">
+        
+        
+        
+    </div>
+    
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+       
+       
+        $(function () {    
+            /*
+               
+            */https://
+
+            
+            var baseURL = 'https://data.cityofchicago.org/resource/6zsd-86xi.json';
+            
+            
+            var filters = '?case_number=';
+            
+          
+            var url = baseURL + filters;   
+            
+            console.log (url);
+            
+            
+            $("#btnSearch").attr("disabled", true);
+            
+            
+            $("#crime").keyup(function(){  
+                if ($("#crime").val() == "") {   
+                    $("#btnSearch").attr("disabled", true)  
+                }
+                else {
+                    $("#btnSearch").attr("disabled", false)
+                }
+            })
+            
+            
+            
+         
+          
+            $("#btnSearch").on("click", function() {
+                
+             
+                $("#results").html("");
+                
+               
+                var caseNum = $("#crime").val();
+           
+                var urlWithParams = url + caseNum;
+                console.log(urlWithParams);  
+                
+                $.getJSON(urlWithParams)       
+                    .done (function (data) {   
+                        
+                        console.log(data);
+                        
+                        var numRecords = data.length;  
+                        
+                      
+                        var message = 
+                            "<p>Records found: "
+                            + numRecords
+                            + "</p>"
+                        
+                        $("#results").append(message);
+                        
+                        
+                   
+                        if (numRecords > 0) {
+                        
+                            $.each (data , 
+                                function (index, value) {
+                               
+                                    var html = "<h2>" 
+                                        + "Arrested: " 
+                                        + value.arrest
+                                        + "</h2>"
+                                        + "<p>" 
+                                        + "Block: "
+                                        + value.block
+                                        + "<br>"
+                                        + "Case Number: "
+                                        + value.case_number
+                                        + "<br>"
+                                        + "Crime Date & Time: "
+                                        + value.date
+                                        + "<br>"
+                                        + "Crime Description: "
+                                        + value.description
+                                        + "</p>";
+                                   
+                                   
+                                    $("#results").append(html);
+     
+                            
+                                
+                                }  
+                            
+                            );                             
+                        
+                        }   
+
+                    }) 
+            
+            })  
+        
+        }) 
+        
+        
+    </script>
+    </body>
+</html>
